@@ -1,5 +1,7 @@
 package co.edu.unbosque.chistesneco.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,8 +29,7 @@ public class AuthController {
 	private final JwtUtil jwtUtil;
 	private final UsuarioService usuarioService;
 
-	public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil,
-			UsuarioService usuarioService) {
+	public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UsuarioService usuarioService) {
 		this.authenticationManager = authenticationManager;
 		this.jwtUtil = jwtUtil;
 		this.usuarioService = usuarioService;
@@ -36,12 +37,10 @@ public class AuthController {
 
 	@Operation(summary = "Iniciar sesion", description = "Autentica un usuario y retorna un token JWT.")
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody UsuarioDTO loginRequest) {
+	public ResponseEntity<?> login(@RequestParam String username, @RequestParam String contrasena) {
 		try {
-			Authentication authentication = authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(
-							loginRequest.getUsername(),
-							loginRequest.getContrasena()));
+			Authentication authentication = authenticationManager
+					.authenticate(new UsernamePasswordAuthenticationToken(username, contrasena));
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			String jwt = jwtUtil.generateToken(userDetails);
@@ -62,11 +61,17 @@ public class AuthController {
 
 	@Operation(summary = "Registrar usuario", description = "Crea un nuevo usuario. El tipo se asigna automaticamente segun la edad.")
 	@PostMapping("/register")
-	public ResponseEntity<?> register(@RequestBody UsuarioDTO registerRequest) {
+	public ResponseEntity<?> register(@RequestParam String username, @RequestParam String contrasena,
+			@RequestParam LocalDate fechaNacimiento) {
 
-		if (usuarioService.findUsernameAlreadyTaken(registerRequest.getUsername())) {
+		if (usuarioService.findUsernameAlreadyTaken(username)) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre de usuario ya existe");
 		}
+
+		UsuarioDTO registerRequest = new UsuarioDTO();
+		registerRequest.setUsername(username);
+		registerRequest.setContrasena(contrasena);
+		registerRequest.setFechaNacimiento(fechaNacimiento);
 
 		int result = usuarioService.create(registerRequest);
 
