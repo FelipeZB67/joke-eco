@@ -2,11 +2,10 @@ package co.edu.unbosque.chistesneco.entity;
 import java.util.Collection;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,8 +17,12 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="usuario" )
-public class Usuario implements UserDetailsService{
+public class Usuario implements UserDetails{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3419274481795946604L;
 	private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
 	@Column(unique = true)
 	private String username;
@@ -63,18 +66,6 @@ public class Usuario implements UserDetailsService{
 		NINO,
 		ADULTO
 	}
-
-
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of(new SimpleGrantedAuthority("ROLE_" + userType.name()));
-	}
-
 
 	public Long getId() {
 		return id;
@@ -153,6 +144,18 @@ public class Usuario implements UserDetailsService{
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+
+	@Override
+	public @Nullable String getPassword() {
+		return contrasena;
+	}
+
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority("ROLE_" + userType.name()));
 	}
 	
 	
