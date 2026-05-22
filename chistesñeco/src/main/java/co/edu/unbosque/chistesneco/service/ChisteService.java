@@ -34,10 +34,14 @@ public class ChisteService {
     }
 
     public String obtenerChisteTodo(Usuario usuario) {
-        JokeApiDTO respuesta = llamarApi(urlTodo);
-        String chiste = extraerTexto(respuesta);
-        guardarHistorial(usuario, chiste, "CUALQUIER_TIPO");
-        return chiste;
+    	if (usuario.getUserType() == Usuario.UserType.NINO) {
+    		return "No tienes permiso para solicitar este tipo de chiste.";
+    	}
+
+    	JokeApiDTO respuesta = llamarApi(urlTodo);
+    	String chiste = extraerTexto(respuesta);
+    	guardarHistorial(usuario, chiste, "CUALQUIER_TIPO");
+    	return chiste;
     }
 
     public List<HistorialChiste> obtenerHistorial() {

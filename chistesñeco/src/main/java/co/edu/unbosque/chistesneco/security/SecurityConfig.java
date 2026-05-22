@@ -38,13 +38,20 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource()))
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
+		http.csrf(csrf -> csrf.disable())
+				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/auth/**").permitAll()
 						.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 						.requestMatchers("/usuario/create", "/usuario/createjson").permitAll()
-						.requestMatchers("/usuario/**").hasRole("ADMINISTRADOR").requestMatchers("/noticia/**")
-						.hasRole("ADMINISTRADOR").requestMatchers("/horoscopo/**").hasRole("ADMINISTRADOR").anyRequest()
-						.authenticated())
+						.requestMatchers("/chiste/seguro/**").hasAnyRole("NINO", "ADULTO", "ADMINISTRADOR")
+						.requestMatchers("/chiste/todo/**").hasAnyRole("ADULTO", "ADMINISTRADOR")
+						.requestMatchers("/chiste/historial/**").hasRole("ADMINISTRADOR")
+						.requestMatchers("/usuario/**").hasRole("ADMINISTRADOR")
+						.requestMatchers("/noticia/**").hasRole("ADMINISTRADOR")
+						.requestMatchers("/horoscopo/**").hasRole("ADMINISTRADOR")
+
+						.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
