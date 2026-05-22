@@ -1,4 +1,5 @@
 package co.edu.unbosque.chistesneco.dto;
+import java.time.LocalDate;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -11,6 +12,7 @@ public class UsuarioDTO {
 	@Column(unique = true)
 	private String username;
 	private String contrasena;
+	private LocalDate fechaNacimiento;
 	
 	@Enumerated(EnumType.STRING)
 	private UserType userType;
@@ -21,6 +23,15 @@ public class UsuarioDTO {
 	}
 	
 	
+	public UsuarioDTO(String username, String contrasena, LocalDate fechaNacimiento, UserType userType) {
+		super();
+		this.username = username;
+		this.contrasena = contrasena;
+		this.setFechaNacimiento(fechaNacimiento);
+		this.userType = userType;
+	}
+
+
 	public UsuarioDTO(String username, String contrasena, UserType userType) {
 		super();
 		this.username = username;
@@ -76,16 +87,19 @@ public class UsuarioDTO {
 	}
 
 
+	
+
+
 	@Override
 	public String toString() {
-		return "UsuarioDTO [id=" + id + ", username=" + username + ", contrasena=" + contrasena + ", userType="
-				+ userType + "]";
+		return "UsuarioDTO [id=" + id + ", username=" + username + ", contrasena=" + contrasena + ", fechaNacimiento="
+				+ fechaNacimiento + ", userType=" + userType + "]";
 	}
 
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(contrasena, id, userType, username);
+		return Objects.hash(contrasena, fechaNacimiento, id, userType, username);
 	}
 
 
@@ -98,8 +112,19 @@ public class UsuarioDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		UsuarioDTO other = (UsuarioDTO) obj;
-		return Objects.equals(contrasena, other.contrasena) && Objects.equals(id, other.id)
-				&& userType == other.userType && Objects.equals(username, other.username);
+		return Objects.equals(contrasena, other.contrasena) && Objects.equals(fechaNacimiento, other.fechaNacimiento)
+				&& Objects.equals(id, other.id) && userType == other.userType
+				&& Objects.equals(username, other.username);
+	}
+
+
+	public LocalDate getFechaNacimiento() {
+		return fechaNacimiento;
+	}
+
+
+	public void setFechaNacimiento(LocalDate fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
 	}
 
 	
