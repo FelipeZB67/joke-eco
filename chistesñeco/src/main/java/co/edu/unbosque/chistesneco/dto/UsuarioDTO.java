@@ -2,9 +2,8 @@ package co.edu.unbosque.chistesneco.dto;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import co.edu.unbosque.chistesneco.entity.Usuario.UserType;
 import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 
 public class UsuarioDTO {
 	
@@ -13,8 +12,6 @@ public class UsuarioDTO {
 	private String username;
 	private String contrasena;
 	private LocalDate fechaNacimiento;
-	
-	@Enumerated(EnumType.STRING)
 	private UserType userType;
 	
 	
@@ -38,14 +35,6 @@ public class UsuarioDTO {
 		this.contrasena = contrasena;
 		this.userType = userType;
 	}
-
-
-	public enum UserType {
-		ADMINISTRADOR,
-		NINO,
-		ADULTO
-	}
-
 
 	public Long getId() {
 		return id;
@@ -85,11 +74,6 @@ public class UsuarioDTO {
 	public void setUserType(UserType userType) {
 		this.userType = userType;
 	}
-
-
-	
-
-
 	@Override
 	public String toString() {
 		return "UsuarioDTO [id=" + id + ", username=" + username + ", contrasena=" + contrasena + ", fechaNacimiento="
