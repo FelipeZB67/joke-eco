@@ -178,5 +178,4 @@ public class Usuario implements UserDetails {
 				&& Objects.equals(id, other.id) && userType == other.userType
 				&& Objects.equals(username, other.username);
 	}
-	
 }
